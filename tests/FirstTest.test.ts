@@ -1,6 +1,6 @@
 import { expect, test } from "@playwright/test";
 
-test("Test1", async ({ page }) => {
+test("Test1", { tag: ["@smoke", "@epic123", "@us234"] }, async ({ page }) => {
   await test.step("Go to the URL", async () => {
     await page.goto("https://www.saucedemo.com/");
   });
