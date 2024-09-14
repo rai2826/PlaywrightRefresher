@@ -2,7 +2,7 @@ import { expect, test } from "@playwright/test";
 
 test("Test1", { tag: ["@smoke", "@epic123", "@us234"] }, async ({ page }) => {
   await test.step("Go to the URL", async () => {
-    await page.goto("https://www.saucedemo.com/");
+    await page.goto("/");
   });
 
   await test.step("Enter User name and pass word", async () => {
@@ -14,5 +14,9 @@ test("Test1", { tag: ["@smoke", "@epic123", "@us234"] }, async ({ page }) => {
   await test.step("Validate the title page", async () => {
     const title = await page.locator(".app_logo").innerText();
     expect(title).toBe("Swag Labs");
+  });
+
+  await test.step("Validate the title page again", async () => {
+    await expect(page).toHaveTitle("Swag Labs");
   });
 });
