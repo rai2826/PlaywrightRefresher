@@ -1,5 +1,6 @@
 import { expect, test } from "@playwright/test";
 import { assert } from "console";
+import { faker } from "@faker-js/faker";
 
 test("E2E test for shopping", async ({ page }) => {
   await test.step("Login to the demo website", async () => {
@@ -16,7 +17,7 @@ test("E2E test for shopping", async ({ page }) => {
 
     const count = await products.count();
     console.log(count);
-    console.log(count);
+    //console.log(count);
     for (let i = 0; i < count; i++) {
       if (
         (await products.nth(i).locator("b").textContent()) === "ADIDAS ORIGINAL"
@@ -32,5 +33,27 @@ test("E2E test for shopping", async ({ page }) => {
     const productAdded = await page.locator(".cartSection h3").textContent();
     expect(productAdded).toBe("ADIDAS ORIGINAL");
     await page.getByRole("button", { name: "checkout" }).click();
+  });
+
+  await test.step("Enter the Credit card info and place order", async () => {
+    let cvv = String(faker.number.int({ min: 100, max: 999 }));
+    let name = faker.person.firstName();
+    await page.getByRole("combobox").nth(0).selectOption({ index: 10 });
+    await page.getByRole("combobox").nth(1).selectOption({ index: 28 });
+    await page.locator('input[type="text"]').nth(1).fill(cvv);
+    await page.locator('input[type="text"]').nth(2).fill(name);
+    await page.getByPlaceholder("select country").pressSequentially("aus");
+    const dropdown = page.locator("section .ta-results");
+    await dropdown.waitFor();
+    const options = await dropdown.locator("button").count();
+    console.log(options);
+    for (let i = 0; i < options; i++) {
+      const option = await dropdown.locator("button").nth(i).textContent();
+      if (option === " Australia") {
+        await dropdown.locator("button").nth(i).click();
+        break;
+      }
+    }
+    await page.getByText("Place Order").click();
   });
 });
