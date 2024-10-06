@@ -16,6 +16,7 @@ test("E2E test for shopping", async ({ page }) => {
 
     const count = await products.count();
     console.log(count);
+    console.log(count);
     for (let i = 0; i < count; i++) {
       if (
         (await products.nth(i).locator("b").textContent()) === "ADIDAS ORIGINAL"
