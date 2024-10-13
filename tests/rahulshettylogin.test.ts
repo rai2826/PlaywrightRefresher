@@ -55,5 +55,25 @@ test("E2E test for shopping", async ({ page }) => {
       }
     }
     await page.getByText("Place Order").click();
+    await expect(page.locator(".hero-primary")).toHaveText(
+      " Thankyou for the order. "
+    );
+    const orderID = await page
+      .locator(".em-spacer-1 .ng-star-inserted")
+      .textContent();
+    console.log(orderID);
+
+    await page.locator("button[routerlink*=myorders]").click();
+
+    await page.locator("tbody").waitFor();
+    const rowcount = page.locator("tbody tr");
+
+    for (let i = 0; i < (await rowcount.count()); i++) {
+      const rowOrderId = await rowcount.nth(i).locator("th").textContent();
+      if (orderID.includes(rowOrderId)) {
+        await rowcount.nth(i).locator("button").first().click();
+        break;
+      }
+    }
   });
 });
